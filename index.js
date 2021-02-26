@@ -7,7 +7,14 @@ app.get('/', (req, res) => {
 })
 
 io.on('connection', socket => {
-    console.log('a user connected')
+    socket.broadcast.emit('joined', 'User has joined')
+    socket.on('disconnect', () => {
+        io.emit('left', 'User has left')
+        console.log('user disconnected')
+    })
+    socket.on('chat message', msg => {
+        io.emit('chat message', msg)
+    })
 })
 
 http.listen(3000, () => {
